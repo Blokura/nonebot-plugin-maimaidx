@@ -37,6 +37,10 @@ ratingdir: Path = static / 'mai' / 'rating'
 MEIRYO: Path =  static / 'meiryo.ttc'
 SIYUAN: Path = static / 'SourceHanSansSC-Bold.otf'
 TBFONT: Path = static / 'Torus SemiBold.otf'
+HIRAGINO: Path = static / 'hiragino.ttf'
+
+chunidir: Path = static / 'chuni' / 'pic'
+chunicoverdir: Path = static / 'chuni' / 'cover'
 
 
 # 常用变量

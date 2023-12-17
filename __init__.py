@@ -24,6 +24,7 @@ from .config import *
 from .libraries.image import to_bytes_io
 from .libraries.maimaidx_api_data import maiApi
 from .libraries.maimaidx_best_50 import *
+from .libraries.chunithm_best_30 import *
 from .libraries.maimaidx_music import alias, guess, mai, update_local_alias
 from .libraries.maimaidx_music_info import *
 from .libraries.maimaidx_player_score import *
@@ -73,6 +74,8 @@ level_process = on_regex(r'^([0-9]+\+?)\s?(.+)进度\s?(.+)?', priority=5)
 level_achievement_list = on_regex(r'^([0-9]+\+?)分数列表\s?([0-9]+)?\s?(.+)?', priority=5)
 rating_ranking = on_command('查看排名', aliases={'查看排行'}, priority=5)
 set_username = on_command('设置查分器账号', priority=5)
+
+best30 = on_command('b30', aliases={'B30'}, priority=5)
 
 
 def song_level(ds1: float, ds2: float, stats1: str = None, stats2: str = None) -> list:
@@ -438,6 +441,20 @@ async def _(event: MessageEvent, matcher: Matcher, arg: Message = CommandArg()):
         await matcher.finish('请先使用"/设置查分器账号"指令设置你的查分器账号，或在本指令后接需要查询的查分器账号，才可以生成图片哦~')
     
     await matcher.send(await generate(username))
+    await matcher.finish()
+
+
+@best30.handle()
+async def _(event: MessageEvent, matcher: Matcher, arg: Message = CommandArg()):
+    username = arg.extract_plain_text().split()
+    if len(username) == 0:
+        openid = event.get_user_id()
+        username = [get_prober_username(openid)]
+
+    if username[0] == '':
+        await matcher.finish('请先使用"/设置查分器账号"指令设置你的查分器账号，或在本指令后接需要查询的查分器账号，才可以生成图片哦~')
+    
+    await matcher.send(await generate_chuni(username))
     await matcher.finish()
 
 
