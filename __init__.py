@@ -57,14 +57,14 @@ search_artist = on_command('曲师查歌', aliases={'search artist'}, priority=5
 search_charter = on_command('谱师查歌', aliases={'search charter'}, priority=5)
 random_song = on_regex(r'^[随来给]个((?:dx|sd|标准))?([绿黄红紫白]?)([0-9]+\+?)$', priority=5)
 mai_what = on_regex(r'.*mai.*什么', priority=5)
-search = on_command('查歌', aliases={'search'}, priority=5)  # 注意 on 响应器的注册顺序，search 应当优先于 search_* 之前注册
+# search = on_command('查歌', aliases={'search'}, priority=5)  # 注意 on 响应器的注册顺序，search 应当优先于 search_* 之前注册
 query_chart = on_regex(r'^id\s?([0-9]+)$', re.IGNORECASE, priority=5)
 mai_today = on_command('今日mai', aliases={'今日舞萌', '今日运势'}, priority=5)
 what_song = on_command('是什么歌', priority=5)
 alias_song = on_regex(r'^(id)?\s?(.+)\s?有什么别[名称]$', re.IGNORECASE, priority=5)
 score = on_command('分数线', priority=5)
-best50 = on_command('b50', aliases={'B50'}, priority=5)
-minfo = on_command('minfo', aliases={'minfo', 'Minfo', 'MINFO'}, priority=5)
+best50 = on_command('b50', aliases={'B50', '舞萌b50'}, priority=5)
+minfo = on_command('minfo', aliases={'minfo', 'Minfo', 'MINFO', '查歌'}, priority=5)
 ginfo = on_command('ginfo', aliases={'ginfo', 'Ginfo', 'GINFO'}, priority=5)
 rating_table = on_regex(r'([0-9]+\+?)定数表', priority=5)
 rating_table_pf = on_regex(r'([0-9]+\+?)完成表', priority=5)
@@ -75,7 +75,7 @@ level_achievement_list = on_regex(r'^([0-9]+\+?)分数列表\s?([0-9]+)?\s?(.+)?
 rating_ranking = on_command('查看排名', aliases={'查看排行'}, priority=5)
 set_username = on_command('设置查分器账号', priority=5)
 
-best30 = on_command('b30', aliases={'B30'}, priority=5)
+best30 = on_command('b30', aliases={'B30', '中二b30'}, priority=5)
 
 
 def song_level(ds1: float, ds2: float, stats1: str = None, stats2: str = None) -> list:
@@ -272,7 +272,7 @@ async def _():
     await mai_what.finish(await new_draw_music_info(mai.total_list.random()), reply_message=True)
 
 
-@search.handle()
+#@search.handle()
 async def _(args: Message = CommandArg()):
     name = args.extract_plain_text().strip()
     if not name:
@@ -471,10 +471,13 @@ async def _(event: MessageEvent, args: Message = CommandArg()):
 
 @minfo.handle()
 async def _(event: MessageEvent, arg: Message = CommandArg()):
-    qqid = get_at_qq(arg) or event.user_id
+    openid = event.get_user_id()
+    username = get_prober_username(openid)
+    if not username:
+        await minfo.finish('请先使用"/设置查分器账号"指令设置你的查分器账号哦~')
     args = arg.extract_plain_text().strip()
     if not args:
-        await minfo.finish('请输入曲目id或曲名', reply_message=True)
+        await minfo.finish('请输入曲目id或曲名')
 
     if mai.total_list.by_id(args):
         songs = args
@@ -483,21 +486,18 @@ async def _(event: MessageEvent, arg: Message = CommandArg()):
     else:
         aliases = mai.total_alias_list.by_alias(args)
         if not aliases:
-            await minfo.finish('未找到曲目', reply_message=True)
+            await minfo.finish('未找到曲目')
         elif len(aliases) != 1:
             msg = '找到相同别名的曲目，请使用以下ID查询：\n'
             for songs in aliases:
                 msg += f'{songs.ID}：{songs.Name}\n'
-            await minfo.finish(msg.strip(), reply_message=True)
+            await minfo.finish(msg.strip())
         else:
             songs = str(aliases[0].ID)
 
-    if maiApi.token:
-        pic = await music_play_data_dev(qqid, songs)
-    else:
-        pic = await music_play_data(qqid, songs)
+    pic = await music_play_data(username, songs)
 
-    await minfo.finish(pic, reply_message=True)
+    await minfo.finish(pic)
 
 
 @ginfo.handle()
