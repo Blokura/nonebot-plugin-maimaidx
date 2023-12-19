@@ -8,7 +8,8 @@ from pydantic import BaseModel
 driver = get_driver()
 
 class Config(BaseModel):
-    
+
+    tinifykey: str
     maimaidxtoken: Optional[str]
     maimaidxpath: str
     botName: str = list(driver.config.nickname)[0] if driver.config.nickname else 'maibot'
@@ -17,6 +18,7 @@ class Config(BaseModel):
 maiconfig = Config.parse_obj(driver.config)
 
 vote_url: str = 'https://vote.yuzuai.xyz/'
+image_url: str = 'http://dns.performai.cn:23333/chfs/shared/'
 
 
 Root: Path = Path(__file__).parent

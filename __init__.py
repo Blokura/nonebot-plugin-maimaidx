@@ -29,6 +29,7 @@ from .libraries.maimaidx_music import alias, guess, mai, update_local_alias
 from .libraries.maimaidx_music_info import *
 from .libraries.maimaidx_player_score import *
 from .libraries.tool import hash2, set_prober_username, get_prober_username
+from .libraries.maimaidx_map import generate_map
 
 __plugin_meta__ = PluginMetadata(
     name='nonebot-plugin-maimaidx',
@@ -50,7 +51,7 @@ from nonebot_plugin_apscheduler import scheduler
 
 
 manual = on_command('帮助maimaiDX', aliases={'帮助maimaidx'}, priority=5)
-repo = on_command('项目地址maimaiDX', aliases={'项目地址maimaidx'}, priority=5)
+repo = on_command('README', aliases={'readme','帮助'}, priority=5)
 search_base = on_command('定数查歌', aliases={'search base'}, priority=5)
 search_bpm = on_command('bpm查歌', aliases={'search bpm'}, priority=5)
 search_artist = on_command('曲师查歌', aliases={'search artist'}, priority=5)
@@ -74,6 +75,7 @@ level_process = on_regex(r'^([0-9]+\+?)\s?(.+)进度\s?(.+)?', priority=5)
 level_achievement_list = on_regex(r'^([0-9]+\+?)分数列表\s?([0-9]+)?\s?(.+)?', priority=5)
 rating_ranking = on_command('查看排名', aliases={'查看排行'}, priority=5)
 set_username = on_command('设置查分器账号', priority=5)
+area = on_command('区域', aliases={'map'}, priority=5)
 
 best30 = on_command('b30', aliases={'B30', '中二b30'}, priority=5)
 
@@ -126,7 +128,7 @@ async def _():
 
 @repo.handle()
 async def _():
-    await repo.finish('项目地址：https://github.com/Yuri-YuzuChaN/nonebot-plugin-maimaidx\n求star，求宣传~', reply_message=True)
+    await repo.finish('\n感谢您使用maibot！\nmaibot是基于Yuri-YuzuChaN/maimaiDX项目修改的一个机器人，由@Blokura完成对群机器人的适配，并在项目的基础上新增了几个功能。\n欢迎您将maibot添加至您自己的群组内，您只需要点击maibot头像-添加到群聊，即可将maibot添加至您的群内。\n')
 
 
 @search_base.handle()
@@ -498,6 +500,17 @@ async def _(event: MessageEvent, arg: Message = CommandArg()):
     pic = await music_play_data(username, songs)
 
     await minfo.finish(pic)
+
+
+@area.handle()
+async def _(event: MessageEvent, arg: Message = CommandArg()):
+    args = arg.extract_plain_text().strip()
+    if not args:
+        await area.finish('\n欢迎使用查询地图信息功能\n格式：\n请在指令后接区域ID或关键词\n使用all作为关键词时，可以列出所有区域')
+    msg = await generate_map(args)
+    await area.send(msg)
+    await area.finish()
+    
 
 
 @ginfo.handle()
