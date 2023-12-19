@@ -174,7 +174,7 @@ class DrawBest:
         await self.whiledraw(self.b30Best, True)
         await self.whiledraw(self.r10Best, False)
 
-        return self._im.resize((1440, 1920))
+        return self._im.resize((1152, 1536))
 
 def getCharWidth(o) -> int:
     widths = [
