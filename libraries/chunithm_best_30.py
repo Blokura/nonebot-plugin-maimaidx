@@ -157,14 +157,22 @@ class DrawBest:
                 bestra = info.ra
 
         bestra = round((b30ra + bestra * 10) / (i + 10),2)
-        b30ra = round(b30ra / i, 2)
+        if i == 0:
+            b30ra = 0
+        else:
+            b30ra = round(b30ra / i, 2)
+        
         
         r10ra = 0.0
         i = 0
         for num, info in enumerate(self.r10Best):
             i = i + 1
             r10ra = r10ra + info.ra
-        r10ra = round(r10ra / i, 2)
+        if i == 0:
+            r10ra = 0
+        else:
+            r10ra = round(r10ra / i, 2)
+        
 
 
         self._hiragino.draw(1314, 2280, 40, 'B30 平均Rating：' + "{:.2f}".format(b30ra), (0,0,0,255), 'lm')

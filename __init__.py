@@ -51,7 +51,7 @@ from nonebot_plugin_apscheduler import scheduler
 
 
 manual = on_command('帮助maimaiDX', aliases={'帮助maimaidx'}, priority=5)
-repo = on_command('README', aliases={'readme','帮助'}, priority=5)
+repo = on_command('README', aliases={'readme','帮助','help','menu','?'}, priority=5)
 search_base = on_command('定数查歌', aliases={'search base'}, priority=5)
 search_bpm = on_command('bpm查歌', aliases={'search bpm'}, priority=5)
 search_artist = on_command('曲师查歌', aliases={'search artist'}, priority=5)
@@ -128,7 +128,7 @@ async def _():
 
 @repo.handle()
 async def _():
-    await repo.finish('\n感谢您使用maibot！\nmaibot是基于Yuri-YuzuChaN/maimaiDX项目修改的一个机器人，由@Blokura完成对群机器人的适配，并在项目的基础上新增了几个功能。\n欢迎您将maibot添加至您自己的群组内，您只需要点击maibot头像-添加到群聊，即可将maibot添加至您的群内。\n')
+    await repo.finish('\n感谢您使用maibot！\nmaibot是基于Yuri-YuzuChaN/maimaiDX项目修改的一个机器人，由@Blokura完成对群机器人的适配，并在项目的基础上新增了几个功能。\n欢迎您将maibot添加至您自己的群组内，您只需要点击maibot头像-添加到群聊，即可将maibot添加至您的群内。\n如有建议或反馈，可以联系QQ：30751625\n\n以下是目前支持的指令列表：\n/舞萌b50 /中二b30 /区域\n/是什么歌 /今日舞萌 /查歌\n/设置查分器账号 /帮助')
 
 
 @search_base.handle()
@@ -506,7 +506,7 @@ async def _(event: MessageEvent, arg: Message = CommandArg()):
 async def _(event: MessageEvent, arg: Message = CommandArg()):
     args = arg.extract_plain_text().strip()
     if not args:
-        await area.finish('\n欢迎使用查询地图信息功能\n格式：\n请在指令后接区域ID或关键词\n使用all作为关键词时，可以列出所有区域')
+        await area.finish('\n欢迎使用查询地图信息功能\n\n请在指令后接区域ID或关键词\n使用all作为关键词时，可以列出所有区域')
     msg = await generate_map(args)
     await area.send(msg)
     await area.finish()
